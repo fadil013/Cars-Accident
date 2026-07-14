@@ -6,6 +6,18 @@ first frame of contact** instead of appearing seconds later in the aftermath.
 
 It is an **assistive flag for a human operator**. It never calls anyone and never acts on its own.
 
+## Demo
+
+![Accident detection demo](docs/demo.gif)
+
+The crash is flagged at the first frame of contact and every vehicle in the pile-up is boxed in red.
+Full-resolution annotated clips:
+[clip 1](out/Car%20Accident%201.0_accident.mp4) ·
+[clip 2](out/Car%20Accident%202_accident.mp4) ·
+[clip 3](out/Car%20Accident%203_accident.mp4)
+
+## System architecture
+
 ![System architecture](docs/system_uml.png)
 
 ## How it works

@@ -8,10 +8,11 @@ venv/
 *.pt
 *.onnx
 
-# Demo / large media (annotated demo is on LinkedIn)
-*.mp4
+# Large media: ignore raw footage, keep the annotated demo outputs
 *.mov
 *.avi
+*.mp4
+!out/*_accident.mp4
 
 # Sample media of external provenance
 crash_topdown.png
