@@ -1,0 +1,21 @@
+[
+  {
+    "type": "ACCIDENT",
+    "reason": "Collision + spinout",
+    "time_s": 4.71,
+    "frame": 113,
+    "ids": [
+      6,
+      7,
+      67,
+      96
+    ],
+    "bbox": [
+      225,
+      395,
+      754,
+      704
+    ],
+    "confidence": 1.0
+  }
+]

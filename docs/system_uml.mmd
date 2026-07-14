@@ -1,0 +1,56 @@
+%%{init: {'theme':'base', 'themeVariables': {'fontFamily':'Segoe UI','primaryColor':'#ffffff','primaryTextColor':'#111111','primaryBorderColor':'#111111','lineColor':'#111111','tertiaryColor':'#ffffff','fontSize':'18px'}, 'flowchart': {'nodeSpacing': 172, 'rankSpacing': 20, 'padding':6, 'curve': 'linear'}}}%%
+flowchart TD
+    START((Start)) --> ING("Ingest frame<br/>(CCTV / dashcam)")
+    ING --> DET("Detect people + vehicles<br/>(YOLO11x)")
+    DET --> TRK("Track stable IDs<br/>(ByteTrack)")
+    TRK --> FORK["Fork &mdash; run heads in parallel"]
+
+    FORK --> ACC1("ACCIDENT (built)<br/>Per-vehicle speed from motion")
+    FORK --> FGT1("FIGHT / ROAD-RAGE (planned)<br/>Track body pose over time")
+    FORK --> GUN1("WEAPON / GUN (planned)<br/>Weapon detector on crops")
+    FORK --> CRD1("CROWD / MOB (planned)<br/>Person density map (CSRNet)")
+
+    ACC1 --> ACC2{"Boxes overlap (IoU) +<br/>sudden speed loss?"}
+    ACC2 -->|No| JOIN["Join &mdash; wait for all"]
+    ACC2 -->|Yes| ACC3("Vehicles go static<br/>box coords freeze")
+    ACC3 --> ACC4{"Static = crash<br/>or traffic?"}
+    ACC4 -->|Traffic| JOIN
+    ACC4 -->|Crash| ACC5("Crash: odd angle,<br/>boxes merged")
+    ACC5 --> ACC6{"Car at rest at<br/>impact >= N frames?"}
+    ACC6 -->|No| JOIN
+    ACC6 -->|Yes| AF("Flag ACCIDENT<br/>backdate to first contact + IDs")
+    AF --> JOIN
+
+    FGT1 --> FGT2{"Action model flags<br/>aggression? (RWF-2000)"}
+    FGT2 -->|Yes| FF("Flag FIGHT")
+    FGT2 -->|No| JOIN
+    FF --> JOIN
+
+    GUN1 --> GUN2{"Gun persists across<br/>several frames?"}
+    GUN2 -->|Yes| GF("Flag WEAPON")
+    GUN2 -->|No| JOIN
+    GF --> JOIN
+
+    CRD1 --> CRD2{"Sudden surge or<br/>abnormal gathering?"}
+    CRD2 -->|Yes| CF("Flag CROWD")
+    CRD2 -->|No| JOIN
+    CF --> JOIN
+
+    JOIN --> FUSE("Fuse + correlate events<br/>escalation: Crash &rarr; Fight &rarr; Gun")
+    FUSE --> Q{"Any flag over<br/>threshold?"}
+    Q -->|Yes| AL("Alert operator<br/>clip + confidence")
+    AL --> HUM("Human confirms / dismisses<br/>system never auto-acts")
+    HUM --> OUT("Save annotated video<br/>+ events.json")
+    Q -->|No| MON("Keep monitoring")
+    OUT --> END((End))
+    MON --> END
+
+    classDef term fill:#111111,stroke:#111111,color:#ffffff;
+    classDef bar fill:#111111,stroke:#111111,color:#ffffff;
+    classDef act fill:#ffffff,stroke:#111111,color:#111111,stroke-width:1.4px;
+    classDef dec fill:#ffffff,stroke:#111111,color:#111111,stroke-width:1.4px;
+
+    class START,END term;
+    class FORK,JOIN bar;
+    class ING,DET,TRK,ACC1,ACC3,ACC5,AF,FGT1,GUN1,CRD1,FF,GF,CF,FUSE,AL,HUM,OUT,MON act;
+    class ACC2,ACC4,ACC6,FGT2,GUN2,CRD2,Q dec;

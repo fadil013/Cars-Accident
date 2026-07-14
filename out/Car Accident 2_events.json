@@ -1,0 +1,19 @@
+[
+  {
+    "type": "ACCIDENT",
+    "reason": "Collision",
+    "time_s": 7.25,
+    "frame": 174,
+    "ids": [
+      8,
+      168
+    ],
+    "bbox": [
+      780,
+      330,
+      910,
+      463
+    ],
+    "confidence": 0.85
+  }
+]
